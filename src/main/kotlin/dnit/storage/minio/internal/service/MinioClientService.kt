@@ -177,7 +177,7 @@ class MinioClientService(configurations: MinioConfiguration) : StorageService {
         length: Long
     ): InputStream {
         return throwableExecute {
-            val response: InputStream = client.getObject(
+            client.getObject(
                 GetObjectArgs.builder()
                     .bucket(bucketName)
                     .`object`(filename)
@@ -185,7 +185,6 @@ class MinioClientService(configurations: MinioConfiguration) : StorageService {
                     .length(length)
                     .build()
             )
-            response
         }
     }
 
