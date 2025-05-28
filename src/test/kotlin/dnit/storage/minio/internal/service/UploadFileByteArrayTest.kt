@@ -16,19 +16,19 @@ import org.mockito.kotlin.whenever
 class UploadFileByteArrayTest {
 
     private lateinit var minioClient: MinioClient
-    private lateinit var minioClientService: MinioClientService
+    private lateinit var minioServiceImpl: MinioServiceImpl
     
     @BeforeEach
     fun setUp() {
         minioClient = mock()
         
         // Use reflection to set the mocked client
-        val service = MinioClientService(MinioConfiguration())
-        val clientField = MinioClientService::class.java.getDeclaredField("client")
+        val service = MinioServiceImpl(MinioConfiguration())
+        val clientField = MinioServiceImpl::class.java.getDeclaredField("client")
         clientField.isAccessible = true
         clientField.set(service, minioClient)
         
-        minioClientService = service
+        minioServiceImpl = service
     }
     
     @Test
@@ -43,7 +43,7 @@ class UploadFileByteArrayTest {
         
         // Act & Assert
         val exception = assertThrows(MinioDnitException::class.java) {
-            minioClientService.uploadFile(bucketName, filename, content)
+            minioServiceImpl.uploadFile(bucketName, filename, content)
         }
         
         assertEquals("Failed to check if bucket exists", exception.message)
@@ -64,7 +64,7 @@ class UploadFileByteArrayTest {
         
         // Act & Assert
         val exception = assertThrows(MinioDnitException::class.java) {
-            minioClientService.uploadFile(bucketName, filename, content)
+            minioServiceImpl.uploadFile(bucketName, filename, content)
         }
         
         assertEquals("[MinioDnitException] Upload failed", exception.message)

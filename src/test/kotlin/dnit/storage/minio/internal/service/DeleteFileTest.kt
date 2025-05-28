@@ -16,19 +16,19 @@ import org.mockito.kotlin.whenever
 class DeleteFileTest {
 
     private lateinit var minioClient: MinioClient
-    private lateinit var minioClientService: MinioClientService
+    private lateinit var minioServiceImpl: MinioServiceImpl
     
     @BeforeEach
     fun setUp() {
         minioClient = mock()
         
         // Use reflection to set the mocked client
-        val service = MinioClientService(MinioConfiguration())
-        val clientField = MinioClientService::class.java.getDeclaredField("client")
+        val service = MinioServiceImpl(MinioConfiguration())
+        val clientField = MinioServiceImpl::class.java.getDeclaredField("client")
         clientField.isAccessible = true
         clientField.set(service, minioClient)
         
-        minioClientService = service
+        minioServiceImpl = service
     }
     
     @Test
@@ -38,7 +38,7 @@ class DeleteFileTest {
         val filename = "test-file.txt"
         
         // Act
-        minioClientService.deleteFile(bucketName, filename)
+        minioServiceImpl.deleteFile(bucketName, filename)
         
         // Assert
         verify(minioClient).removeObject(any<RemoveObjectArgs>())
@@ -60,7 +60,7 @@ class DeleteFileTest {
         }
         
         // Act
-        minioClientService.deleteFile(bucketName, filename)
+        minioServiceImpl.deleteFile(bucketName, filename)
         
         // No explicit assert needed as the verification is in the answer block
     }
@@ -76,7 +76,7 @@ class DeleteFileTest {
         
         // Act & Assert
         val exception = assertThrows(MinioDnitException::class.java) {
-            minioClientService.deleteFile(bucketName, filename)
+            minioServiceImpl.deleteFile(bucketName, filename)
         }
         
         assertEquals("[MinioDnitException] Delete failed", exception.message)

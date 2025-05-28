@@ -5,9 +5,9 @@
  * Utilizada em conjunto com o Storage Service para a criação de um cliente
 
  * val service: StorageService = MinioClientService(MinioConfiguration())
- * @see StorageService
+ * @see MinioService
  * @see MinioConfiguration
- * @see MinioClientService
+ * @see dnit.storage.minio.internal.service.MinioServiceImpl
  */
 data class MinioConfiguration(
     val host: String = "localhost",

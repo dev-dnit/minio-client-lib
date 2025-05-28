@@ -24,19 +24,19 @@ import org.mockito.kotlin.whenever
 class MinioClientServiceTest {
 
     private lateinit var minioClient: MinioClient
-    private lateinit var minioClientService: MinioClientService
+    private lateinit var minioServiceImpl: MinioServiceImpl
 
     @BeforeEach
     fun setUp() {
         minioClient = mock()
 
         // Use reflection to set the mocked client
-        val service = MinioClientService(MinioConfiguration())
-        val clientField = MinioClientService::class.java.getDeclaredField("client")
+        val service = MinioServiceImpl(MinioConfiguration())
+        val clientField = MinioServiceImpl::class.java.getDeclaredField("client")
         clientField.isAccessible = true
         clientField.set(service, minioClient)
 
-        minioClientService = service
+        minioServiceImpl = service
     }
 
     // bucketExists tests
@@ -47,7 +47,7 @@ class MinioClientServiceTest {
         whenever(minioClient.bucketExists(any<BucketExistsArgs>())).thenReturn(true)
 
         // Act
-        val result = minioClientService.bucketExists(bucketName)
+        val result = minioServiceImpl.bucketExists(bucketName)
 
         // Assert
         assertTrue(result)
@@ -60,7 +60,7 @@ class MinioClientServiceTest {
         whenever(minioClient.bucketExists(any<BucketExistsArgs>())).thenReturn(false)
 
         // Act
-        val result = minioClientService.bucketExists(bucketName)
+        val result = minioServiceImpl.bucketExists(bucketName)
 
         // Assert
         assertFalse(result)
@@ -74,7 +74,7 @@ class MinioClientServiceTest {
 
         // Act & Assert
         val exception = assertThrows(MinioDnitException::class.java) {
-            minioClientService.bucketExists(bucketName)
+            minioServiceImpl.bucketExists(bucketName)
         }
 
         assertEquals("Failed to check if bucket exists", exception.message)
@@ -91,7 +91,7 @@ class MinioClientServiceTest {
         whenever(minioClient.statObject(any<StatObjectArgs>())).thenReturn(null)
 
         // Act
-        val result = minioClientService.fileExists(bucketName, filename)
+        val result = minioServiceImpl.fileExists(bucketName, filename)
 
         // Assert
         assertTrue(result)
@@ -113,7 +113,7 @@ class MinioClientServiceTest {
         whenever(minioClient.statObject(any<StatObjectArgs>())).thenThrow(exception)
 
         // Act
-        val result = minioClientService.fileExists(bucketName, filename)
+        val result = minioServiceImpl.fileExists(bucketName, filename)
 
         // Assert
         assertFalse(result)
@@ -129,7 +129,7 @@ class MinioClientServiceTest {
 
         // Act & Assert
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            minioClientService.listObjectsByPage(bucketName, page, pageSize)
+            minioServiceImpl.listObjectsByPage(bucketName, page, pageSize)
         }
 
         assertEquals("Page must be >= 0", exception.message)
@@ -144,7 +144,7 @@ class MinioClientServiceTest {
 
         // Act & Assert
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            minioClientService.listObjectsByPage(bucketName, page, pageSize)
+            minioServiceImpl.listObjectsByPage(bucketName, page, pageSize)
         }
 
         assertEquals("Page size must be >= 1", exception.message)
@@ -158,7 +158,7 @@ class MinioClientServiceTest {
         val filename = "test-file.txt"
 
         // Act
-        minioClientService.deleteFile(bucketName, filename)
+        minioServiceImpl.deleteFile(bucketName, filename)
 
         // Assert
         verify(minioClient).removeObject(any<RemoveObjectArgs>())
@@ -173,7 +173,7 @@ class MinioClientServiceTest {
 
         // Act
         try {
-            minioClientService.downloadFile(bucketName, filename)
+            minioServiceImpl.downloadFile(bucketName, filename)
         } catch (e: Exception) {
             // Ignore exceptions, we're just verifying the method call
         }
@@ -193,7 +193,7 @@ class MinioClientServiceTest {
 
         // Act & Assert
         val exception = assertThrows(MinioDnitException::class.java) {
-            minioClientService.downloadFile(bucketName, filename)
+            minioServiceImpl.downloadFile(bucketName, filename)
         }
 
         assertEquals("[MinioDnitException] Download failed", exception.message)
@@ -210,7 +210,7 @@ class MinioClientServiceTest {
 
         // Act
         try {
-            minioClientService.downloadChunkedFile(bucketName, filename, offset, length)
+            minioServiceImpl.downloadChunkedFile(bucketName, filename, offset, length)
         } catch (e: Exception) {
             // Ignore exceptions, we're just verifying the method call
         }
@@ -232,7 +232,7 @@ class MinioClientServiceTest {
         whenever(minioClient.getPresignedObjectUrl(any<GetPresignedObjectUrlArgs>())).thenReturn(expectedUrl)
 
         // Act
-        val result = minioClientService.getDocumentUrl(bucketName, filename, expirationInDays)
+        val result = minioServiceImpl.getDocumentUrl(bucketName, filename, expirationInDays)
 
         // Assert
         assertEquals(expectedUrl, result)

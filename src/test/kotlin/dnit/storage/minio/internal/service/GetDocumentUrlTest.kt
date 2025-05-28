@@ -16,19 +16,19 @@ import org.mockito.kotlin.whenever
 class GetDocumentUrlTest {
 
     private lateinit var minioClient: MinioClient
-    private lateinit var minioClientService: MinioClientService
+    private lateinit var minioServiceImpl: MinioServiceImpl
     
     @BeforeEach
     fun setUp() {
         minioClient = mock()
         
         // Use reflection to set the mocked client
-        val service = MinioClientService(MinioConfiguration())
-        val clientField = MinioClientService::class.java.getDeclaredField("client")
+        val service = MinioServiceImpl(MinioConfiguration())
+        val clientField = MinioServiceImpl::class.java.getDeclaredField("client")
         clientField.isAccessible = true
         clientField.set(service, minioClient)
         
-        minioClientService = service
+        minioServiceImpl = service
     }
     
     @Test
@@ -43,7 +43,7 @@ class GetDocumentUrlTest {
         whenever(minioClient.getPresignedObjectUrl(any<GetPresignedObjectUrlArgs>())).thenReturn(expectedUrl)
         
         // Act
-        val result = minioClientService.getDocumentUrl(bucketName, filename, expirationInDays)
+        val result = minioServiceImpl.getDocumentUrl(bucketName, filename, expirationInDays)
         
         // Assert
         assertEquals(expectedUrl, result)
@@ -64,7 +64,7 @@ class GetDocumentUrlTest {
         }
         
         // Act
-        val result = minioClientService.getDocumentUrl(bucketName, filename)
+        val result = minioServiceImpl.getDocumentUrl(bucketName, filename)
         
         // Assert
         assertEquals(expectedUrl, result)
@@ -81,7 +81,7 @@ class GetDocumentUrlTest {
         
         // Act & Assert
         val exception = assertThrows(MinioDnitException::class.java) {
-            minioClientService.getDocumentUrl(bucketName, filename)
+            minioServiceImpl.getDocumentUrl(bucketName, filename)
         }
         
         assertEquals("[MinioDnitException] URL generation failed", exception.message)

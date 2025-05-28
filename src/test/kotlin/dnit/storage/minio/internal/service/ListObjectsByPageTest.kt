@@ -17,19 +17,19 @@ import org.mockito.kotlin.whenever
 class ListObjectsByPageTest {
 
     private lateinit var minioClient: MinioClient
-    private lateinit var minioClientService: MinioClientService
+    private lateinit var minioServiceImpl: MinioServiceImpl
     
     @BeforeEach
     fun setUp() {
         minioClient = mock()
         
         // Use reflection to set the mocked client
-        val service = MinioClientService(MinioConfiguration())
-        val clientField = MinioClientService::class.java.getDeclaredField("client")
+        val service = MinioServiceImpl(MinioConfiguration())
+        val clientField = MinioServiceImpl::class.java.getDeclaredField("client")
         clientField.isAccessible = true
         clientField.set(service, minioClient)
         
-        minioClientService = service
+        minioServiceImpl = service
     }
     
     @Test
@@ -47,7 +47,7 @@ class ListObjectsByPageTest {
         whenever(minioClient.listObjects(any<ListObjectsArgs>())).thenReturn(mockResults)
         
         // Act
-        val result = minioClientService.listObjectsByPage(bucketName, page, pageSize)
+        val result = minioServiceImpl.listObjectsByPage(bucketName, page, pageSize)
         
         // Assert
         // We expect items from index 2 and 3 (page 1, size 2)
@@ -69,7 +69,7 @@ class ListObjectsByPageTest {
         whenever(minioClient.listObjects(any<ListObjectsArgs>())).thenReturn(mockResults)
         
         // Act
-        val result = minioClientService.listObjectsByPage(bucketName, page, pageSize)
+        val result = minioServiceImpl.listObjectsByPage(bucketName, page, pageSize)
         
         // Assert
         assertEquals(emptyList<String>(), result)
@@ -84,7 +84,7 @@ class ListObjectsByPageTest {
         
         // Act & Assert
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            minioClientService.listObjectsByPage(bucketName, page, pageSize)
+            minioServiceImpl.listObjectsByPage(bucketName, page, pageSize)
         }
         
         assertEquals("Page must be >= 0", exception.message)
@@ -99,7 +99,7 @@ class ListObjectsByPageTest {
         
         // Act & Assert
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            minioClientService.listObjectsByPage(bucketName, page, pageSize)
+            minioServiceImpl.listObjectsByPage(bucketName, page, pageSize)
         }
         
         assertEquals("Page size must be >= 1", exception.message)
@@ -116,7 +116,7 @@ class ListObjectsByPageTest {
         
         // Act & Assert
         val exception = assertThrows(MinioDnitException::class.java) {
-            minioClientService.listObjectsByPage(bucketName, page, pageSize)
+            minioServiceImpl.listObjectsByPage(bucketName, page, pageSize)
         }
         
         assertEquals("[MinioDnitException] Test exception", exception.message)
