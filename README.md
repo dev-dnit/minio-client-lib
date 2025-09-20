@@ -27,7 +27,7 @@ Adicione a dependência no seu projeto Maven
 <dependency>
     <groupId>com.github.dev-dnit</groupId>
     <artifactId>minio-client-lib</artifactId>
-    <version>1.0.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 

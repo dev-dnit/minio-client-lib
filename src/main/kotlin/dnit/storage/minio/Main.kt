@@ -1,12 +1,16 @@
 ﻿package dnit.storage.minio
 
-import dnit.storage.minio.api.MinioConfiguration
-import dnit.storage.minio.internal.service.MinioServiceImpl
 
-
-fun main() {
-    val service = MinioServiceImpl(MinioConfiguration())
-
-    val file = service.listObjectsByPage("dnit", 0, 20)
-    println("Total files: ${file}")
-}
+//fun main() {
+//    val service = MinioServiceImpl(MinioConfiguration(
+//        host = "localhost",
+//        port = 9000,
+//        useSsl = false,
+//        username = "minio123",
+//        password = "minio123",
+//    ))
+//
+//    println("Preparando para deletar")
+//    service.deleteFolder("tsd-2025", "imagem/376BPR0265_CRESCENTE")
+//    println("Deletado com sucesso")
+//}

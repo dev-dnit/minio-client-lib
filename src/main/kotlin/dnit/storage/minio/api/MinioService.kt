@@ -33,4 +33,6 @@ interface MinioService {
 
     fun deleteFile(bucketName: String, filename: String)
 
+    fun deleteFolder(bucketName: String, folderName: String)
+
 }

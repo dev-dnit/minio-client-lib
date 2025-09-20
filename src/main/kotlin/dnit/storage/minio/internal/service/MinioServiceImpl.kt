@@ -11,9 +11,11 @@ import io.minio.MakeBucketArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import io.minio.RemoveObjectArgs
+import io.minio.RemoveObjectsArgs
 import io.minio.StatObjectArgs
 import io.minio.errors.ErrorResponseException
 import io.minio.http.Method
+import io.minio.messages.DeleteObject
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
@@ -202,6 +204,40 @@ class MinioServiceImpl(configurations: MinioConfiguration) : MinioService {
     }
 
 
+
+    override fun deleteFolder(bucketName: String, folderName: String) {
+        return throwableExecute {
+            // Ensure folderName ends with "/" to avoid partial matches
+            val prefix = if (folderName.endsWith("/")) folderName else "$folderName/"
+
+            val objects = client.listObjects(
+                ListObjectsArgs.builder()
+                    .bucket(bucketName)
+                    .prefix(prefix)
+                    .recursive(true)
+                    .build()
+            )
+
+            val toDelete = objects.map { DeleteObject(it.get().objectName()) }.toList()
+
+            if (toDelete.isNotEmpty()) {
+                val results = client.removeObjects(
+                    RemoveObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .objects(toDelete)
+                        .build()
+                )
+
+                // Check for errors
+                for (result in results) {
+                    val err = result.get()
+                    if (err != null) {
+                        throw MinioDnitException("Error deleting object ${err.objectName()} : ${err.message()}")
+                    }
+                }
+            }
+        }
+    }
 
     private fun ensureBucketExists(bucketName: String) {
         try {
