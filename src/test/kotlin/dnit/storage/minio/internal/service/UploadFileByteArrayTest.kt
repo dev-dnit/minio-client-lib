@@ -46,7 +46,7 @@ class UploadFileByteArrayTest {
             minioServiceImpl.uploadFile(bucketName, filename, content)
         }
         
-        assertEquals("Failed to check if bucket exists", exception.message)
+        assertEquals("[MinioDnitException] Failed to ensure bucket exists", exception.message)
     }
     
     @Test

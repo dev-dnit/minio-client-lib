@@ -7,7 +7,7 @@
 
     <groupId>dnit.storage.minio</groupId>
     <artifactId>minio-client-lib</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
 
 
     <name>Minio Helper Library</name>
