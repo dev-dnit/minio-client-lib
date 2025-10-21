@@ -7,7 +7,7 @@
 
     <groupId>dnit.storage.minio</groupId>
     <artifactId>minio-client-lib</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
 
     <name>Minio Helper Library</name>
@@ -116,8 +116,8 @@
 
         <dependency>
             <groupId>io.quarkiverse.minio</groupId>
-            <artifactId>quarkus-minio</artifactId>
-            <version>3.8.6</version>
+            <artifactId>quarkus-minio-native</artifactId>
+            <version>3.8.5</version>
         </dependency>
 
         <dependency>
