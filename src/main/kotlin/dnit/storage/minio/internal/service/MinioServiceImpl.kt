@@ -34,7 +34,8 @@ class MinioServiceImpl(configurations: MinioConfiguration) : MinioService {
         .builder()
         .endpoint(configurations.host, configurations.port, configurations.useSsl)
         .credentials(configurations.username, configurations.password)
-    .build()
+        .apply { configurations.region?.let { region(it) } }
+        .build()
 
 
     override fun bucketExists(bucketName: String): Boolean {

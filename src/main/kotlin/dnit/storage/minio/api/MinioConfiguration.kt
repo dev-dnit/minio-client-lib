@@ -15,6 +15,8 @@ data class MinioConfiguration(
     val useSsl: Boolean = false,
     val username: String = "minio123",
     val password: String = "minio123",
+
+    val region: String? = null,
 ) {
 
     init {
